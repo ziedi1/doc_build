@@ -31,3 +31,13 @@ jobs:
       run: |
         cd docs
         make html
+        
+    - name: Deploy to GitHub Pages
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git checkout -b gh-pages
+        cp -r docs/_build/html/* .
+        git add .
+        git commit -m 'Deploy documentation to GitHub Pages'
+        git push --force origin gh-pages
