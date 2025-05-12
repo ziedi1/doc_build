@@ -1,4 +1,4 @@
-name: Build Documentation
+name: Build Sphinx Documentation
 
 on:
   push:
@@ -23,7 +23,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install sphinx
 
-    - name: Build documentation
+    - name: Initialize Sphinx
+      run: |
+        sphinx-quickstart docs --quiet --project "Your Project Name" --author "Your Name" --release "0.1" --extensions "sphinx.ext.autodoc,sphinx.ext.napoleon" --makefile --batchfile
+
+    - name: Build HTML documentation
       run: |
         cd docs
         make html
+
+    - name: Upload HTML documentation
+      uses: actions/upload-artifact@v2
+      with:
+        name: sphinx-html
+        path: docs/_build/html
