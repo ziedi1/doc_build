@@ -25,15 +25,9 @@ jobs:
 
     - name: Initialize Sphinx
       run: |
-        sphinx-quickstart docs --quiet --project "Your Project Name" --author "Your Name" --release "0.1" --extensions "sphinx.ext.autodoc,sphinx.ext.napoleon" --makefile --batchfile
+        sphinx-quickstart docs --quiet --project "test_project" --author "Mohamed ZIADI" --release "0.1" --extensions "sphinx.ext.autodoc,sphinx.ext.napoleon" --makefile --batchfile
 
     - name: Build HTML documentation
       run: |
         cd docs
         make html
-
-    - name: Upload HTML documentation
-      uses: actions/upload-artifact@v3
-      with:
-        name: sphinx-html
-        path: docs/_build/html
