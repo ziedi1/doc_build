@@ -1,4 +1,4 @@
-name: Build Sphinx Documentation
+name: Build and Release Documentation
 
 on:
   push:
@@ -25,19 +25,30 @@ jobs:
 
     - name: Initialize Sphinx
       run: |
-        sphinx-quickstart docs --quiet --project "test_project" --author "Mohamed ZIADI" --release "0.1" --extensions "sphinx.ext.autodoc,sphinx.ext.napoleon" --makefile --batchfile
+        sphinx-quickstart docs --quiet --project "Your Project Name" --author "Your Name" --release "0.1" --extensions "sphinx.ext.autodoc,sphinx.ext.napoleon" --makefile --batchfile
 
     - name: Build HTML documentation
       run: |
         cd docs
         make html
-        
-    - name: Deploy to GitHub Pages
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git checkout -b gh-pages
-        cp -r docs/_build/html/* .
-        git add .
-        git commit -m 'Deploy documentation to GitHub Pages'
-        git push --force origin gh-pages
+        zip -r html.zip _build/html
+
+    - name: Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: 'v1.0.0'
+        release_name: 'Documentation Release'
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: docs/html.zip
+        asset_name: html.zip
+        asset_content_type: application/zip
